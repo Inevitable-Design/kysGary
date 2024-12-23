@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
       const { publicKey } = await verifyToken(req);
       userPublicKey = publicKey;
     } catch (error) {
+      console.log(error);
       return NextResponse.json({ error: "Authentication failed" }, { status: 401 });
     }
 
@@ -22,10 +23,25 @@ export async function POST(req: NextRequest) {
     }
 
     const connection = new Connection(process.env.SOLANA_RPC_URL!);
-    const txn = await connection.getTransaction(txnHash);
+    const startTime = Date.now();
+    let txn;
     
-    if (!txn) {
-      return NextResponse.json({ error: "Transaction not found" }, { status: 400 });
+    while (Date.now() - startTime < 25 * 1000) {
+      txn = await connection.getTransaction(txnHash, {
+      maxSupportedTransactionVersion: 0
+      });
+      
+      if (txn && txn.meta?.postTokenBalances?.some(balance => balance.owner === process.env.TREASURY_PUBLIC_KEY)) {
+      break;
+      }
+      
+      // Wait 2 seconds before retrying
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+
+    if (!txn || txn.meta?.err) {
+      console.log("Invalid transaction after retries:", txn);
+      return NextResponse.json({ error: "Invalid transaction" }, { status: 400 });
     }
 
     const currentTime = Date.now() / 1000;
@@ -34,25 +50,25 @@ export async function POST(req: NextRequest) {
     }
 
     const solPrice = await getSolPrice();
-    const defaultFeeUSD = 300;
+    const defaultFeeUSD = 1;
+    const defaultPoolUSD = 300;
     const defaultFeeSOL = defaultFeeUSD / solPrice;
 
     let game = await Game.findOne({ isActive: true });
     if (!game) {
       game = await Game.create({ 
         isActive: true,
-        currentFeeUSD: defaultFeeUSD,
-        currentFeeSOL: defaultFeeSOL,
-        prizePoolUSD: defaultFeeUSD,
-        prizePoolSOL: defaultFeeSOL
+        currentFee: defaultFeeUSD,
+        // currentFeeSOL: defaultFeeSOL,
+        prizePool: defaultPoolUSD,
+        // prizePoolSOL: defaultFeeSOL
       });
     }
 
     const message = await Message.create({
       content,
       userAddress: userPublicKey,
-      feeUSD: defaultFeeUSD,
-      feeSOL: defaultFeeSOL,
+      fee: game.currentFee,
       transactionHash: txnHash
     });
 
@@ -74,13 +90,12 @@ export async function POST(req: NextRequest) {
 
     game.messageCount += 1;
     game.lastMessageTime = new Date();
-    game.currentFeeUSD = defaultFeeUSD;
-    game.currentFeeSOL = defaultFeeSOL;
-    game.prizePoolUSD = (game.prizePoolUSD || defaultFeeUSD) + (defaultFeeUSD * 0.75);
-    game.prizePoolSOL = game.prizePoolUSD / solPrice;
+    game.currentFee = game.currentFee * 1.05;
+    game.prizePool = (game.prizePool || defaultPoolUSD) + (game.currentFee * 0.75);
+    // game.prizePoolSOL = game.prizePoolUSD / solPrice;
 
     if (isTransfer) {
-      const txHash = await transferPrizePool(userPublicKey, game.prizePoolSOL);
+      const txHash = await transferPrizePool(userPublicKey, game.prizePool);
       if (txHash) {
         game.isActive = false;
         game = await Game.create({
@@ -97,10 +112,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       message: output,
       isWinner: isTransfer,
-      prizePoolUSD: game.prizePoolUSD,
-      prizePoolSOL: game.prizePoolSOL,
-      nextFeeUSD: game.currentFeeUSD,
-      nextFeeSOL: game.currentFeeSOL,
+      prizePoolUSD: game.prizePool,
+      nextFeeUSD: game.currentFee,
     });
 
   } catch (error) {
