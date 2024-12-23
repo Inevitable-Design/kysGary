@@ -82,7 +82,7 @@ export const HeroSection = () => {
               <h1 className="leading-tight tracking-tight">
                 Save
                 <span className="text-transparent px-3 bg-gradient-to-r from-[#D247BF] to-primary bg-clip-text">
-                  KysGary
+                  Gary
                 </span>
                 from the Edge!
               </h1>

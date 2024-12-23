@@ -4,6 +4,7 @@ import { useWalletModal, WalletIcon } from "@solana/wallet-adapter-react-ui";
 import { MouseEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import "@solana/wallet-adapter-react-ui/styles.css";
+import useAuth from "@/hooks/useAuth";
 
 const WalletButton = ({ ...props }) => {
     const { publicKey, wallet, connect, connecting, connected, disconnect } =
@@ -11,6 +12,7 @@ const WalletButton = ({ ...props }) => {
     const { setVisible } = useWalletModal();
     const [copied, setCopied] = useState(false);
     const [active, setActive] = useState(false);
+    const { authenticate, logout, isAuthenticated } = useAuth();
     const ref = useRef<HTMLUListElement>(null);
 
     const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
@@ -75,6 +77,7 @@ const WalletButton = ({ ...props }) => {
         if (event.defaultPrevented) return;
         closeDropdown();
         await disconnect();
+        logout();
     }, [disconnect, closeDropdown])
     return (
       <div className={`relative inline-block ${props.className}`}>
