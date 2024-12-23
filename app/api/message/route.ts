@@ -25,18 +25,17 @@ export async function POST(req: NextRequest) {
     const connection = new Connection(process.env.SOLANA_RPC_URL!);
     const startTime = Date.now();
     let txn;
-    
+
     while (Date.now() - startTime < 25 * 1000) {
       txn = await connection.getTransaction(txnHash, {
       maxSupportedTransactionVersion: 0
       });
-      
       if (txn && txn.meta?.postTokenBalances?.some(balance => balance.owner === process.env.TREASURY_PUBLIC_KEY)) {
-      break;
+      console.log("Transaction found:", txn);
+        break;
       }
-      
       // Wait 2 seconds before retrying
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
     if (!txn || txn.meta?.err) {

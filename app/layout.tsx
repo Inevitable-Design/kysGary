@@ -46,14 +46,15 @@ function WalletAuthWrapper({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const checkAndAuthenticate = async () => {
-      if (connected && !localStorage.getItem('token') && publicKey) {
+      if (connected && await !localStorage.getItem('token') && publicKey) {
         await authenticate(publicKey, signMessage);
+        await router.push('/');
       } else if(!connected && localStorage.getItem('token')) {
-        logout();
+        await localStorage.removeItem('token')
       }
     };
     checkAndAuthenticate();
-  }, [connected, publicKey, authenticate]);
+  }, [connected, publicKey]);
 
   useEffect(() => {
     if (!connected && pathname === '/chat') {

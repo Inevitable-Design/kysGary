@@ -25,7 +25,7 @@ import Image from "next/image";
 import { ToggleTheme } from "./toogle-theme";
 import WalletConnect from "../WalletConnect";
 import { useWallet } from "@solana/wallet-adapter-react";
-import cn from "classnames";
+import { cn } from "@/lib/utils";
 
 interface RouteProps {
   href: string;
