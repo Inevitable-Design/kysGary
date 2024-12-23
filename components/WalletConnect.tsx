@@ -59,7 +59,7 @@ const WalletConnectComponent: FC = () => {
   return (
     <div className="flex items-center gap-4 ">
       <WalletMultiButton 
-        className="!bg-primary hover:!bg-primary/90 !h-10 !px-4 !rounded-full !font-medium !text-sm !transition-all !duration-200 !shadow-lg hover:!shadow-primary/25"
+        className="!bg-primary hover:!bg-primary/90 !h-10 !px-6 !rounded-full !font-medium !text-sm !transition-all !duration-200 !shadow-lg hover:!shadow-primary/25 !border-0 !min-w-[140px] !flex !items-center !justify-center"
       />
       
       {connected && !isAuthenticated && (
