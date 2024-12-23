@@ -5,6 +5,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { useConnection } from '@solana/wallet-adapter-react'
 import { LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js'
 import ChatInput from './chat-input'
+import axios from 'axios'
 
 interface Message {
   id: string
@@ -31,8 +32,8 @@ export default function ChatInterface() {
 
   const fetchCurrentFee = async () => {
     try {
-      const response = await fetch('/api/game/currentFee')
-      const data = await response.json()
+      const response = await axios.get('/api/game/currentFee')
+      const data = response.data
       setCurrentFee(data)
       
       // Add initial bot message with fee info
@@ -77,18 +78,17 @@ export default function ChatInterface() {
       setMessages(prev => [...prev, userMessage])
 
       // Send to API
-      const response = await fetch('/api/message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          content,
-          txnHash: txHash
-        })
-      })
+      const token = localStorage.getItem('token');
+      const { data } = await axios.post('/api/message', {
+        content,
+        txnHash: txHash
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
 
-      if (!response.ok) throw new Error('API request failed')
-
-      const data = await response.json()
+      if (!data) throw new Error('API request failed')
 
       // Add bot response
       const botMessage: Message = {
