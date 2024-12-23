@@ -106,12 +106,24 @@ export const HeroSection = () => {
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-4">
               <WalletButton />
-              <Button asChild className="w-full md:w-auto font-bold group/arrow bg-destructive hover:bg-destructive/90">
-                <Link href="/chat">
-                  Join Chat
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover/arrow:translate-x-1 transition-transform" />
-                </Link>
-              </Button>
+              {connected ? (
+                <Button 
+                  asChild 
+                  className="w-full md:w-auto font-bold group/arrow bg-gradient-to-r from-[#8A2BE2] via-[#9370DB] to-[#8A2BE2] hover:from-[#9370DB] hover:to-[#8A2BE2] border border-purple-500/20 shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
+                >
+                  <Link href="/chat" className="flex items-center">
+                    Join Chat
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover/arrow:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+              ) : (
+                <Button 
+                  disabled 
+                  className="w-full md:w-auto font-bold cursor-not-allowed bg-transparent border border-gray-300/50 dark:border-gray-700/50 text-gray-400 dark:text-gray-500 hover:bg-transparent transition-colors duration-300"
+                >
+                  Connect Wallet to Join Chat
+                </Button>
+              )}
             </div>
           </div>
         </div>

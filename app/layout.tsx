@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/components/layout/theme-provider";
 import useAuth from "@/hooks/useAuth";
 import { use, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useRouter, usePathname } from "next/navigation";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
@@ -16,21 +17,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-  const { authenticate, logout, isAuthenticated } = useAuth();
-  const { publicKey, signMessage, connected, connecting, disconnect } = useWallet();
-
-  useEffect(() => {
-    const checkAndAuthenticate = async () => {
-      if (connected && !localStorage.getItem('token') && publicKey) {
-        await authenticate(publicKey, signMessage);
-      } else if(!connected && localStorage.getItem('token')) {
-        logout();
-      }
-    };
-    checkAndAuthenticate();
-  }, [connected, publicKey, authenticate]);
-
   return (
     <html lang="pt-br" suppressHydrationWarning>
       <body className={cn("min-h-screen bg-background", inter.className)}>
@@ -41,11 +27,39 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Navbar />
-            {children}
+            <WalletAuthWrapper>
+              <Navbar />
+              {children}
+            </WalletAuthWrapper>
           </ThemeProvider>
         </WalletContextProvider>
       </body>
     </html>
   );
+}
+
+function WalletAuthWrapper({ children }: { children: React.ReactNode }) {
+  const { authenticate, logout, isAuthenticated } = useAuth();
+  const { publicKey, signMessage, connected, connecting, disconnect } = useWallet();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const checkAndAuthenticate = async () => {
+      if (connected && !localStorage.getItem('token') && publicKey) {
+        await authenticate(publicKey, signMessage);
+      } else if(!connected && localStorage.getItem('token')) {
+        logout();
+      }
+    };
+    checkAndAuthenticate();
+  }, [connected, publicKey, authenticate, logout]);
+
+  useEffect(() => {
+    if (!connected && pathname === '/chat') {
+      router.push('/');
+    }
+  }, [connected, pathname, router]);
+
+  return <>{children}</>;
 }

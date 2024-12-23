@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import ChatInput from './chat-input'
 import ChatMessage from './chat-message'
 
@@ -20,6 +20,8 @@ export default function ChatInterface() {
       timestamp: new Date(),
     },
   ])
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const handleSendMessage = async (content: string) => {
     const newMessage: Message = {
@@ -71,13 +73,22 @@ export default function ChatInterface() {
     }
   };
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex-1 pt-16 px-4">
+      <div className="flex-1 pt-16 px-4 overflow-y-auto">
         <div className="max-w-3xl mx-auto space-y-6 pb-24">
           {messages.map((message) => (
             <ChatMessage key={message.id} message={message} />
           ))}
+          <div ref={messagesEndRef} />
         </div>
       </div>
       <div className="fixed bottom-0 left-0 right-0 backdrop-blur-md border-t border-white/10">

@@ -24,6 +24,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ToggleTheme } from "./toogle-theme";
 import WalletConnect from "../WalletConnect";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 interface RouteProps {
   href: string;
@@ -75,6 +76,8 @@ export const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const pathname = usePathname();
   const isOnChatPage = pathname === "/chat";
+  const { connected } = useWallet();
+
   return (
     <header className="shadow-inner bg-opacity-15 w-[95%] md:w-[85%] lg:w-[90%] lg:max-w-screen-2xl top-5 mx-auto sticky border border-secondary z-40 rounded-2xl flex justify-between items-center p-2 bg-card">
       <Link href="/" className="font-bold text-lg flex items-center">
@@ -180,7 +183,7 @@ export const Navbar = () => {
 
       <div className="hidden lg:flex items-center gap-6">
         <ToggleTheme />
-        {!isOnChatPage && (
+        {!isOnChatPage && connected ? (
           <Button asChild size="sm" className="bg-primary hover:bg-primary/90 text-sm font-medium px-4 h-10 shadow-lg hover:shadow-primary/25 transition-all duration-200 rounded-full">
             <Link
               aria-label="Start Chat"
@@ -189,7 +192,9 @@ export const Navbar = () => {
               Start Chat
             </Link>
           </Button>
-        )}
+        ) : !connected && !isOnChatPage ? (
+          <p className="text-sm text-muted-foreground">Connect wallet to start chat</p>
+        ) : null}
         <WalletConnect/>
 
       </div>
