@@ -126,9 +126,9 @@ export const Navbar = () => {
       </div>
 
       {/* <!-- Desktop --> */}
-      <NavigationMenu className="hidden lg:block mx-auto">
-        <NavigationMenuList>
-          <NavigationMenuItem>
+      {/* <NavigationMenu className="hidden lg:block mx-auto"> */}
+        {/* <NavigationMenuList> */}
+          {/* <NavigationMenuItem>
             <NavigationMenuTrigger className="bg-card text-base">
               Features
             </NavigationMenuTrigger>
@@ -158,9 +158,9 @@ export const Navbar = () => {
                 </ul>
               </div>
             </NavigationMenuContent>
-          </NavigationMenuItem>
+          </NavigationMenuItem> */}
 
-          <NavigationMenuItem>
+          {/* <NavigationMenuItem>
             {routeList.map(({ href, label }) => (
               <NavigationMenuLink key={href} asChild>
                 <Link href={href} className="text-base px-2">
@@ -170,18 +170,17 @@ export const Navbar = () => {
             ))}
           </NavigationMenuItem>
         </NavigationMenuList>
-      </NavigationMenu>
+      </NavigationMenu> */}
 
       <div className="hidden lg:flex">
         <ToggleTheme />
 
         <Button asChild size="sm" variant="ghost" aria-label="View on GitHub">
           <Link
-            aria-label="View on GitHub"
-            href="https://github.com/nobruf/shadcn-landing-page.git"
-            target="_blank"
+            aria-label="Start Chat"
+            href="/chat"
           >
-            <Github className="size-5" />
+            Start Chat
           </Link>
         </Button>
       </div>
