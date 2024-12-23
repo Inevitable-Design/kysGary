@@ -22,6 +22,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { ToggleTheme } from "./toogle-theme";
+import WalletConnect from "../WalletConnect";
 
 interface RouteProps {
   href: string;
@@ -174,6 +175,8 @@ export const Navbar = () => {
 
       <div className="hidden lg:flex">
         <ToggleTheme />
+
+        <WalletConnect />
 
         <Button asChild size="sm" variant="ghost" aria-label="View on GitHub">
           <Link
