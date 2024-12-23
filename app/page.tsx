@@ -12,13 +12,12 @@ import { TeamSection } from "@/components/layout/sections/team";
 import { TestimonialSection } from "@/components/layout/sections/testimonial";
 
 export const metadata = {
-  title: "Shadcn - Landing template",
-  description: "Free Shadcn landing page for developers",
+  title: "KysGarry - Save Me From The Edge",
+  description: "A Web3 game where you try to save KysGarry from jumping. Connect your wallet, join the conversation, and win the prize pool!",
   openGraph: {
     type: "website",
-    url: "https://github.com/nobruf/shadcn-landing-page.git",
-    title: "Shadcn - Landing template",
-    description: "Free Shadcn landing page for developers",
+    title: "KysGarry - Save Me From The Edge",
+    description: "A Web3 game where you try to save KysGarry from jumping. Connect your wallet, join the conversation, and win the prize pool!",
     images: [
       {
         url: "https://res.cloudinary.com/dbzv9xfjp/image/upload/v1723499276/og-images/shadcn-vue.jpg",
@@ -31,8 +30,8 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     site: "https://github.com/nobruf/shadcn-landing-page.git",
-    title: "Shadcn - Landing template",
-    description: "Free Shadcn landing page for developers",
+    title: "KysGarry - Save Me From The Edge",
+    description: "A Web3 game where you try to save KysGarry from jumping. Connect your wallet, join the conversation, and win the prize pool!",
     images: [
       "https://res.cloudinary.com/dbzv9xfjp/image/upload/v1723499276/og-images/shadcn-vue.jpg",
     ],
@@ -43,15 +42,7 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-      <SponsorsSection />
-      <BenefitsSection />
-      <FeaturesSection />
-      <ServicesSection />
-      <TestimonialSection />
-      <TeamSection />
       <CommunitySection />
-      <PricingSection />
-      <ContactSection />
       <FAQSection />
       <FooterSection />
     </>
