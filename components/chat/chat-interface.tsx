@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useConnection } from '@solana/wallet-adapter-react'
 import { LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js'
@@ -46,6 +46,8 @@ export default function ChatInterface() {
       console.error('Error fetching fee:', error)
     }
   }
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const handleSendMessage = async (content: string) => {
     if (!publicKey || !currentFee) return
@@ -115,11 +117,19 @@ export default function ChatInterface() {
     } finally {
       setIsLoading(false)
     }
-  }
+  };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex-1 pt-16 px-4">
+      <div className="flex-1 pt-16 px-4 overflow-y-auto">
         <div className="max-w-3xl mx-auto space-y-6 pb-24">
           {messages.map((message) => (
             <div 
@@ -135,6 +145,7 @@ export default function ChatInterface() {
               </div>
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </div>
       </div>
       <div className="fixed bottom-0 left-0 right-0 backdrop-blur-md border-t border-white/10">
