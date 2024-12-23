@@ -1,8 +1,11 @@
 // lib/solana.ts
 import { Connection, PublicKey, Transaction, SystemProgram } from '@solana/web3.js';
-
-export async function transferPrizePool(winnerAddress: string, amountSOL: number) {
+import { getSolPrice } from './utils';
+export async function transferPrizePool(winnerAddress: string, amountUSD: number) {
   try {
+    const solPrice = await getSolPrice();
+    const amountSOL = amountUSD / solPrice; // Convert USD to SOL
+
     const connection = new Connection(process.env.SOLANA_RPC_URL!);
     const fromWallet = new PublicKey(process.env.TREASURY_WALLET!);
     const toWallet = new PublicKey(winnerAddress);
