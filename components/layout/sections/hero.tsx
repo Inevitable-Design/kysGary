@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { WalletButton } from "../../../components/WalletConnect";
+import  WalletButton  from "../../../components/WalletConnect";
 import { Countdown } from "@/components/ui/countdown";
 import { useEffect, useState } from "react";
 
@@ -105,7 +105,7 @@ export const HeroSection = () => {
             </div>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-              <WalletConnect />
+              <WalletButton />
               <Button asChild className="w-full md:w-auto font-bold group/arrow bg-destructive hover:bg-destructive/90">
                 <Link href="/chat">
                   Join Chat
