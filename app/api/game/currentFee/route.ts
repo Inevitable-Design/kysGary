@@ -31,7 +31,6 @@ export async function GET() {
     console.error("Failed to fetch current fee:", error);
     return NextResponse.json(
       { error: "Failed to fetch current fee" },
-      { error: "Failed to fetch current fee" },
       { status: 500 }
     );
   }
