@@ -46,6 +46,10 @@ const gameSchema = new mongoose.Schema({
     type: Number,
     default: 1,
   },
+  active:{
+    type: Boolean,
+    default: true
+  }
 });
 
 const Game = mongoose.models.Game || mongoose.model("Game", gameSchema);

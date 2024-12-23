@@ -18,7 +18,7 @@ const gameCheckJob = new CronJob('0 * * * *', async () => {
     await transferPrizePool(lastMessage.userAddress, lastUserShare);
     
     const messages = await Message.find();
-    const perMessageShare = (game.prizePool * 0.8) / messages.length;
+    const perMessageShare = (game.prizePool * 0.75) / messages.length;
     
     for (const msg of messages) {
       await transferPrizePool(msg.userAddress, perMessageShare);
