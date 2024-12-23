@@ -1,8 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Card } from '@/components/ui/card'
 import ChatInput from './chat-input'
 import ChatMessage from './chat-message'
 
@@ -23,42 +21,70 @@ export default function ChatInterface() {
     },
   ])
 
-  const handleSendMessage = (content: string) => {
+  const handleSendMessage = async (content: string) => {
     const newMessage: Message = {
       id: Date.now().toString(),
       content,
       sender: 'user',
       timestamp: new Date(),
-    }
-    
-    setMessages((prev) => [...prev, newMessage])
-    
-    // Simulate bot response
-    setTimeout(() => {
+    };
+  
+    setMessages((prev) => [...prev, newMessage]);
+  
+    try {
+      // Send the message to the API
+      const response = await fetch('/api/sendToLLM', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: content }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch bot response');
+      }
+  
+      const data = await response.json();
+  
+      // Simulated bot response from the API
       const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        content: 'Thanks for your message! This is a simulated response.',
+        id: Date.now().toString(),
+        content: data.reply || 'No response from LLM.',
         sender: 'bot',
         timestamp: new Date(),
-      }
-      setMessages((prev) => [...prev, botResponse])
-    }, 1000)
-  }
+      };
+  
+      setMessages((prev) => [...prev, botResponse]);
+    } catch (error) {
+      console.error('Error fetching bot response:', error);
+  
+      // Handle error response
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        content: 'Sorry, something went wrong. Please try again.',
+        sender: 'bot',
+        timestamp: new Date(),
+      };
+  
+      setMessages((prev) => [...prev, errorMessage]);
+    }
+  };
 
   return (
-    <Card className="flex flex-col h-full 6 m-4 overflow-hidden">
-      <div className="flex-1 p-4 ">
-        <ScrollArea className="h-full pr-4">
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
-            ))}
-          </div>
-        </ScrollArea>
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-1 pt-16 px-4">
+        <div className="max-w-3xl mx-auto space-y-6 pb-24">
+          {messages.map((message) => (
+            <ChatMessage key={message.id} message={message} />
+          ))}
+        </div>
       </div>
-      <div className="p-4 border-t">
-        <ChatInput onSendMessage={handleSendMessage} />
+      <div className="fixed bottom-0 left-0 right-0 backdrop-blur-md border-t border-white/10">
+        <div className="max-w-3xl mx-auto p-4">
+          <ChatInput onSendMessage={handleSendMessage} />
+        </div>
       </div>
-    </Card>
+    </div>
   )
 }
