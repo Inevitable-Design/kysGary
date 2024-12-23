@@ -52,23 +52,27 @@ const Game = mongoose.models.Game || mongoose.model("Game", gameSchema);
 
 // models/User.ts
 const userSchema = new mongoose.Schema({
-  address: {
+  publicKey: {
     type: String,
     required: true,
     unique: true,
+    index: true
   },
   nonce: {
     type: String,
-    required: true,
-  },
-  totalSpent: {
-    type: Number,
-    default: 0,
+    required: true
   },
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+}, {
+  timestamps: true,
+  strict: true
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

@@ -1,20 +1,32 @@
+// app/api/message/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { Message, Game } from "../../../db/schema";
 import { transferPrizePool } from "@/lib/solana";
-import { verifyAuth } from "@/lib/auth";
+import { verifyToken } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
+    // Verify authentication
+    let userPublicKey: string;
     try {
-      const user = await verifyAuth(req);
+      const { publicKey } = await verifyToken(req);
+      userPublicKey = publicKey;
     } catch (error) {
-      return NextResponse.json({ error: "Auth failed" }, { status: 401 });
+      console.error('Auth error:', error);
+      return NextResponse.json(
+        { error: "Authentication failed" }, 
+        { status: 401 }
+      );
     }
-    const { content, userAddress } = await req.json();
+
+    const { content } = await req.json();
 
     // Validate message length
-    if (content.length > 1000) {
-      return NextResponse.json({ error: "Message too long" }, { status: 400 });
+    if (!content || content.length > 10000) {
+      return NextResponse.json(
+        { error: "Message too long or empty" }, 
+        { status: 400 }
+      );
     }
 
     // Get or create game
@@ -29,7 +41,7 @@ export async function POST(req: NextRequest) {
     // Create message
     const message = await Message.create({
       content,
-      userAddress,
+      userAddress: userPublicKey, // Use the verified public key
       fee,
     });
 
@@ -45,6 +57,10 @@ export async function POST(req: NextRequest) {
       }
     );
 
+    if (!response.ok) {
+      throw new Error('Failed to get response from Gary API');
+    }
+
     const { output, isTransfer } = await response.json();
 
     // Update game state
@@ -56,7 +72,7 @@ export async function POST(req: NextRequest) {
     // Check win condition
     if (isTransfer) {
       game.isActive = false;
-      await transferPrizePool(userAddress, game.prizePool);
+      await transferPrizePool(userPublicKey, game.prizePool);
     }
 
     // Check game end condition (150 messages)
@@ -70,7 +86,10 @@ export async function POST(req: NextRequest) {
         // Distribute prize pool according to rules
         const lastUserShare = game.prizePool * 0.2;
         await transferPrizePool(lastMessage.userAddress, lastUserShare);
+        
         // Distribute remaining 80% to all participants
+        // TODO: Implement prize distribution logic for all participants
+        const remainingPool = game.prizePool * 0.8;
         // Implementation needed
       }
     }
@@ -83,6 +102,7 @@ export async function POST(req: NextRequest) {
       prizePool: game.prizePool,
       nextFee: game.currentFee,
     });
+    
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

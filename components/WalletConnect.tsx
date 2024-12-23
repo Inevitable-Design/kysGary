@@ -1,13 +1,16 @@
+// components/WalletConnect.tsx
 'use client';
 
 import { FC, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import useAuth from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
 const WalletConnectComponent: FC = () => {
   const { publicKey, signMessage, connected, connecting, disconnect } = useWallet();
+  const { authenticate, logout, isAuthenticated } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -17,6 +20,14 @@ const WalletConnectComponent: FC = () => {
     }
   }, [connected]);
 
+  // Handle wallet disconnect
+  useEffect(() => {
+    if (!connected && isAuthenticated) {
+      logout();
+      toast.info('Wallet disconnected, logged out');
+    }
+  }, [connected, isAuthenticated, logout]);
+
   const handleAuth = async () => {
     if (!publicKey || !signMessage) {
       toast.error('Please connect your wallet first');
@@ -25,18 +36,7 @@ const WalletConnectComponent: FC = () => {
     
     setIsLoading(true);
     try {
-      // Create message for signing
-      const message = new TextEncoder().encode(
-        `Sign this message for authentication\nTimestamp: ${Date.now()}`
-      );
-      
-      // Request signature
-      const signature = await signMessage(message);
-      
-      // Here you can implement your authentication logic
-      // For example, sending the signature to your backend
-      console.log('Signature:', signature);
-      
+      await authenticate(publicKey, signMessage);
       toast.success('Successfully authenticated');
     } catch (error: any) {
       toast.error(error?.message || 'Authentication failed');
@@ -48,6 +48,7 @@ const WalletConnectComponent: FC = () => {
 
   const handleDisconnect = async () => {
     try {
+      logout();
       await disconnect();
       toast.success('Wallet disconnected');
     } catch (error: any) {
@@ -61,23 +62,23 @@ const WalletConnectComponent: FC = () => {
         className="!bg-primary hover:!bg-primary/90" 
       />
       
-      {connected && (
-        <>
-          <button 
-            onClick={handleAuth}
-            disabled={isLoading}
-            className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-md transition-colors disabled:opacity-50"
-          >
-            {isLoading ? 'Authenticating...' : 'Authenticate'}
-          </button>
-          
-          <button
-            onClick={handleDisconnect}
-            className="px-4 py-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-md transition-colors"
-          >
-            Disconnect
-          </button>
-        </>
+      {connected && !isAuthenticated && (
+        <button 
+          onClick={handleAuth}
+          disabled={isLoading}
+          className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-md transition-colors disabled:opacity-50"
+        >
+          {isLoading ? 'Authenticating...' : 'Authenticate'}
+        </button>
+      )}
+
+      {connected && isAuthenticated && (
+        <button
+          onClick={handleDisconnect}
+          className="px-4 py-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-md transition-colors"
+        >
+          Disconnect
+        </button>
       )}
       
       {connecting && (

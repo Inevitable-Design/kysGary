@@ -16,7 +16,7 @@ const useAuth = create<AuthState>((set) => ({
   authenticate: async (publicKey, signMessage) => {
     try {
       // Get nonce
-      const { data: { nonce } } = await axios.get('/api/auth/nonce');
+      const { data: { nonce } } = await axios.get('/api/auth/nonce?publicKey=' + publicKey.toBase58());
       
       // Sign message
       const message = new TextEncoder().encode(nonce);
