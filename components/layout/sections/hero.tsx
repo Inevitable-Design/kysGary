@@ -160,7 +160,7 @@ export const HeroSection = () => {
               <span className="mr-2 text-primary">
                 <Badge>LIVE</Badge>
               </span>
-              <span>Current Prize Pool: {prizePool} SOL</span>
+              <span>Current Prize Pool: {prizePool} USD</span>
             </Badge>
 
             <div className="max-w-screen-lg mx-auto text-center text-4xl md:text-6xl lg:text-7xl font-bold">
