@@ -1,12 +1,26 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { ArrowRight } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export const HeroSection = () => {
+
+    const { publicKey, signMessage, connected, connecting, disconnect } = useWallet();
+      useEffect(() => {
+      // Handle connection state changes
+      console.log('Connected:', connected);
+      console.log(publicKey?.toBase58());
+      if (connected) {
+        // toast.success('Wallet connected successfully');
+        console.log(publicKey?.toBase58());
+      }
+    }, [connected]);
+    
   const { theme } = useTheme();
   return (
     <section className="container w-full">
