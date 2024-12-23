@@ -76,10 +76,10 @@ export const Navbar = () => {
   const pathname = usePathname();
   const isOnChatPage = pathname === "/chat";
   return (
-    <header className="shadow-inner bg-opacity-15 w-[90%] md:w-[70%] lg:w-[75%] lg:max-w-screen-xl top-5 mx-auto sticky border border-secondary z-40 rounded-2xl flex justify-between items-center p-2 bg-card">
+    <header className="shadow-inner bg-opacity-15 w-[95%] md:w-[85%] lg:w-[90%] lg:max-w-screen-2xl top-5 mx-auto sticky border border-secondary z-40 rounded-2xl flex justify-between items-center p-2 bg-card">
       <Link href="/" className="font-bold text-lg flex items-center">
         <ChevronsDown className="bg-gradient-to-tr border-secondary from-primary via-primary/70 to-primary rounded-lg w-9 h-9 mr-2 border text-white" />
-        Shadcn
+        KysGarry
       </Link>
       {/* <!-- Mobile --> */}
       <div className="flex items-center lg:hidden">
@@ -100,7 +100,7 @@ export const Navbar = () => {
                 <SheetTitle className="flex items-center">
                   <Link href="/" className="flex items-center">
                     <ChevronsDown className="bg-gradient-to-tr border-secondary from-primary via-primary/70 to-primary rounded-lg w-9 h-9 mr-2 border text-white" />
-                    Shadcn
+                    KysGarry
                   </Link>
                 </SheetTitle>
               </SheetHeader>
@@ -176,13 +176,12 @@ export const Navbar = () => {
         </NavigationMenuList>
       </NavigationMenu> */}
 
-      <div className="hidden lg:flex">
+
+
+      <div className="hidden lg:flex items-center gap-6">
         <ToggleTheme />
-
-        <WalletConnect />
-
         {!isOnChatPage && (
-          <Button asChild size="sm" variant="ghost" aria-label="View on GitHub">
+          <Button asChild size="sm" className="bg-primary hover:bg-primary/90 text-sm font-medium px-4 h-10 shadow-lg hover:shadow-primary/25 transition-all duration-200 rounded-full">
             <Link
               aria-label="Start Chat"
               href="/chat"
@@ -191,6 +190,8 @@ export const Navbar = () => {
             </Link>
           </Button>
         )}
+        <WalletConnect/>
+
       </div>
     </header>
   );
