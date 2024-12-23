@@ -1,7 +1,7 @@
 "use client";
 import { ChevronsDown, Github, Menu } from "lucide-react";
 import React from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Sheet,
   SheetContent,
@@ -78,6 +78,7 @@ export const Navbar = () => {
   const pathname = usePathname();
   const isOnChatPage = pathname === "/chat";
   const { connected } = useWallet();
+  const router = useRouter();
 
   return (
     <header className="shadow-inner bg-opacity-15 w-[95%] md:w-[85%] lg:w-[90%] lg:max-w-screen-2xl top-5 mx-auto sticky border border-secondary z-40 rounded-2xl flex justify-between items-center p-2 bg-card">
@@ -89,46 +90,67 @@ export const Navbar = () => {
       <div className="flex items-center lg:hidden">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
-            <Menu
-              onClick={() => setIsOpen(!isOpen)}
-              className="cursor-pointer lg:hidden"
-            />
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="lg:hidden"
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
           </SheetTrigger>
 
-          <SheetContent
-            side="left"
-            className="flex flex-col justify-between rounded-tr-2xl rounded-br-2xl bg-card border-secondary"
+          <SheetContent 
+            side="right" 
+            className="w-[300px] sm:w-[400px] p-6 bg-background/95 backdrop-blur-md"
           >
-            <div>
-              <SheetHeader className="mb-4 ml-4">
+            <div className="flex flex-col h-full">
+              <SheetHeader className="mb-8">
                 <SheetTitle className="flex items-center">
-                  <Link href="/" className="flex items-center">
+                  <Link href="/" className="flex items-center" onClick={() => setIsOpen(false)}>
                     <ChevronsDown className="bg-gradient-to-tr border-secondary from-primary via-primary/70 to-primary rounded-lg w-9 h-9 mr-2 border text-white" />
-                    KysGarry
+                    <span className="text-xl font-semibold">KysGarry</span>
                   </Link>
                 </SheetTitle>
               </SheetHeader>
 
-              <div className="flex flex-col gap-2">
-                {routeList.map(({ href, label }) => (
-                  <Button
-                    key={href}
-                    onClick={() => setIsOpen(false)}
-                    asChild
-                    variant="ghost"
-                    className="justify-start text-base"
-                  >
-                    <Link href={href}>{label}</Link>
-                  </Button>
-                ))}
+              <div className="flex-1 space-y-6">
+                {!isOnChatPage && (
+                  <div className="space-y-4">
+                    {!connected ? (
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-muted/50 to-muted/30 blur-lg" />
+                        <p className="relative w-full text-center py-6 text-muted-foreground/80 bg-background/50 border border-border rounded-xl">
+                          Connect wallet to start chat
+                        </p>
+                      </div>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          setIsOpen(false);
+                          router.push('/chat');
+                        }}
+                        className="w-full bg-background hover:bg-muted/50 text-foreground hover:text-foreground/90 border border-border hover:border-border/80 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl py-6"
+                      >
+                        Start Chat
+                      </Button>
+                    )}
+                  </div>
+                )}
+
+                <div className="space-y-4">
+                  <div className="relative w-full">
+                    <div className="absolute inset-0 bg-gradient-to-r from-muted/50 to-muted/30 blur-lg" />
+                    <div className="relative flex justify-center">
+                      <WalletConnect className="!w-full [&>button]:w-full [&>button]:justify-center [&>button]:py-6 [&>button]:px-4 [&>button]:rounded-xl [&>button]:border [&>button]:border-border [&>button]:bg-background/50 [&>button]:hover:bg-muted/50 [&>button]:shadow-sm [&>button]:hover:shadow-md [&>button]:transition-all" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-6 border-t">
+                <ToggleTheme />
               </div>
             </div>
-
-            <SheetFooter className="flex-col sm:flex-col justify-start items-start">
-              <Separator className="mb-2" />
-
-              <ToggleTheme />
-            </SheetFooter>
           </SheetContent>
         </Sheet>
       </div>
