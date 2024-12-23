@@ -7,7 +7,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { WalletContextProvider } from "./providers";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import useAuth from "@/hooks/useAuth";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter, usePathname } from "next/navigation";
 const inter = Inter({ subsets: ["latin"] });
