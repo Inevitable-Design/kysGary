@@ -99,6 +99,7 @@ export default function ChatInterface() {
       }
       setMessages(prev => [...prev, botMessage])
 
+      scrollToBottom();
       // Update fee if game state changed
       if (data.nextFeeUSD !== currentFee.feeUSD) {
         setCurrentFee({
