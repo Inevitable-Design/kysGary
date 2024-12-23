@@ -53,7 +53,7 @@ function WalletAuthWrapper({ children }: { children: React.ReactNode }) {
       }
     };
     checkAndAuthenticate();
-  }, [connected, publicKey, authenticate, logout]);
+  }, [connected, publicKey, authenticate]);
 
   useEffect(() => {
     if (!connected && pathname === '/chat') {
