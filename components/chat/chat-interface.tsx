@@ -91,12 +91,11 @@ export default function ChatInterface() {
         sender: 'user',
         timestamp: new Date()
       }
-      await setMessages(prev => [...prev, userMessage])
 
       // Send to API
       const token = localStorage.getItem('token');
       const { data } = await axios.post('/api/message', {
-        content: messages,
+        content: [...messages, userMessage],
         txnHash: txHash
       }, {
         headers: {
@@ -105,6 +104,7 @@ export default function ChatInterface() {
       });
 
       if (!data) throw new Error('API request failed')
+      setMessages(prev => [...prev, userMessage])
 
       // Add bot response
       const botMessage: Message = {
