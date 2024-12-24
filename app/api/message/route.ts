@@ -8,7 +8,6 @@ import { Connection } from "@solana/web3.js";
 export async function POST(req: NextRequest) {
   try {
     const { txnHash, content } = await req.json();
-    
     let userPublicKey: string;
     try {
       const { publicKey } = await verifyToken(req);
@@ -26,7 +25,7 @@ export async function POST(req: NextRequest) {
     const startTime = Date.now();
     let txn;
 
-    while (Date.now() - startTime < 25 * 1000) {
+    while (Date.now() - startTime < 15 * 1000) {
       txn = await connection.getTransaction(txnHash, {
       maxSupportedTransactionVersion: 0
       });
@@ -64,8 +63,8 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const message = await Message.create({
-      content,
+    Message.create({
+      content: content[content.length - 1].content,
       userAddress: userPublicKey,
       fee: game.currentFee,
       transactionHash: txnHash
@@ -74,11 +73,11 @@ export async function POST(req: NextRequest) {
     if (!process.env.GARY_API_URL) {
       throw new Error('GARY_API_URL not defined');
     }
-
+    const parsedContents = content.map((content:any) => content.content)
     const response = await fetch(process.env.GARY_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ input: [content] }),
+      body: JSON.stringify({ input: parsedContents }),
     });
 
     if (!response.ok) {
@@ -86,6 +85,13 @@ export async function POST(req: NextRequest) {
     }
 
     const { output, isTransfer } = await response.json();
+
+    Message.create({
+      content: output,
+      userAddress: `0x`,
+      fee: game.currentFee,
+      transactionHash: txnHash
+    });
 
     game.messageCount += 1;
     game.lastMessageTime = new Date();
@@ -97,12 +103,12 @@ export async function POST(req: NextRequest) {
       const txHash = await transferPrizePool(userPublicKey, game.prizePool);
       if (txHash) {
         game.isActive = false;
-        game = await Game.create({
-          isActive: true,
-          messageCount: 0,
-          prizePoolUSD: defaultFeeUSD,
-          prizePoolSOL: defaultFeeSOL
-        });
+        // game = await Game.create({
+        //   isActive: true,
+        //   messageCount: 0,
+        //   prizePoolUSD: defaultFeeUSD,
+        //   prizePoolSOL: defaultFeeSOL
+        // });
       }
     }
 

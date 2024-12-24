@@ -75,7 +75,7 @@ const WalletButton = ({ ...props }) => {
         if (event.defaultPrevented) return;
         closeDropdown();
         await disconnect();
-        logout();
+        // localStorage.removeItem("token");
     }, [disconnect, closeDropdown])
     return (
         <div className={cn("relative inline-block", props.className)}>

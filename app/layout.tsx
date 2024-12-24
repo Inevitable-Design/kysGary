@@ -48,8 +48,8 @@ function WalletAuthWrapper({ children }: { children: React.ReactNode }) {
     const checkAndAuthenticate = async () => {
       if (connected && await !localStorage.getItem('token') && publicKey) {
         await authenticate(publicKey, signMessage);
-        await router.push('/');
       } else if(!connected && localStorage.getItem('token')) {
+        await disconnect();
         await localStorage.removeItem('token')
       }
     };

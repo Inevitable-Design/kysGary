@@ -56,6 +56,7 @@ export default function ChatInterface() {
     setIsLoading(true)
     try {
       // Create transaction
+      fetchCurrentFee()
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: publicKey,
@@ -80,7 +81,7 @@ export default function ChatInterface() {
       // Send to API
       const token = localStorage.getItem('token');
       const { data } = await axios.post('/api/message', {
-        content,
+        content: messages,
         txnHash: txHash
       }, {
         headers: {

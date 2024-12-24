@@ -13,11 +13,6 @@ const WalletModalProvider = dynamic(
   { ssr: false }
 );
 
-const WalletMultiButton = dynamic(
-  () => import('@solana/wallet-adapter-react-ui').then(mod => mod.WalletMultiButton),
-  { ssr: false }
-);
-
 require('@solana/wallet-adapter-react-ui/styles.css');
 
 export function WalletContextProvider({ children }: { children: React.ReactNode }) {
@@ -31,7 +26,7 @@ export function WalletContextProvider({ children }: { children: React.ReactNode 
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
+      <WalletProvider wallets={wallets}>
         <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

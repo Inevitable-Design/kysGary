@@ -41,8 +41,8 @@ const useAuth = create<AuthState>((set) => ({
   },
   logout: () => {
     localStorage.removeItem('token');
-    delete axios.defaults.headers.common['Authorization'];
-    set({ isAuthenticated: false, token: null });
+    // delete axios.defaults.headers.common['Authorization'];
+    // set({ isAuthenticated: false, token: null });
   }
 }));
 
