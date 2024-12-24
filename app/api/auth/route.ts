@@ -55,13 +55,13 @@ export async function POST(req: NextRequest) {
     await user.save();
 
     // Set cookie for additional security
-    const cookieStore = cookies();
-    cookieStore.set('auth-token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 // 24 hours
-    });
+    // const cookieStore = cookies();
+    // cookieStore.set('auth-token', token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === 'production',
+    //   sameSite: 'strict',
+    //   maxAge: 60 * 60 * 24 // 24 hours
+    // });
 
     return NextResponse.json({ 
       token,

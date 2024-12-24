@@ -26,16 +26,12 @@ export default function ChatInterface() {
   const { publicKey, sendTransaction } = useWallet()
   const { connection } = useConnection()
 
-  useEffect(() => {
-    fetchCurrentFee()
-  }, [])
-
   const fetchCurrentFee = async () => {
     try {
       const response = await axios.get('/api/game/currentFee')
       const data = response.data
       setCurrentFee(data)
-      
+      console.log('Current fee:', currentFee)
       // Add initial bot message with fee info
       setMessages([{
         id: '1',
@@ -48,6 +44,10 @@ export default function ChatInterface() {
     }
   }
 
+  useEffect(() => {
+    fetchCurrentFee()
+  }, [])
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const handleSendMessage = async (content: string) => {
@@ -56,7 +56,9 @@ export default function ChatInterface() {
     setIsLoading(true)
     try {
       // Create transaction
-      fetchCurrentFee()
+      await fetchCurrentFee()
+      console.log('Current fee:', currentFee)
+      const startTime = Date.now()
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: publicKey,
@@ -64,10 +66,23 @@ export default function ChatInterface() {
           lamports: Math.floor(currentFee.feeSOL * LAMPORTS_PER_SOL)
         })
       )
+      let txn;
 
       // Send transaction
       const txHash = await sendTransaction(transaction, connection)
-      await connection.confirmTransaction(txHash)
+
+      while (Date.now() - startTime < 15 * 1000) {
+        txn = await connection.getTransaction(txHash, {
+        maxSupportedTransactionVersion: 0
+        });
+        console.log('Transaction:', txn)
+        if (txn) {
+        console.log("Transaction found:", txn);
+          break;
+        }
+        // Wait 2 seconds before retrying
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
 
       // Add user message
       const userMessage: Message = {
@@ -76,7 +91,7 @@ export default function ChatInterface() {
         sender: 'user',
         timestamp: new Date()
       }
-      setMessages(prev => [...prev, userMessage])
+      await setMessages(prev => [...prev, userMessage])
 
       // Send to API
       const token = localStorage.getItem('token');

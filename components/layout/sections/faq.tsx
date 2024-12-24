@@ -11,38 +11,6 @@ interface FAQProps {
   value: string;
 }
 
-const FAQList: FAQProps[] = [
-  {
-    question: "Is this template free?",
-    answer: "Yes. It is a free NextJS Shadcn template.",
-    value: "item-1",
-  },
-  {
-    question: "Duis aute irure dolor in reprehenderit in voluptate velit?",
-    answer:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint labore quidem quam consectetur sapiente, iste rerum reiciendis animi nihil nostrum sit quo, modi quod.",
-    value: "item-2",
-  },
-  {
-    question:
-      "Lorem ipsum dolor sit amet Consectetur natus dolor minus quibusdam?",
-    answer:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Labore qui nostrum reiciendis veritatis.",
-    value: "item-3",
-  },
-  {
-    question: "Excepteur sint occaecat cupidata non proident sunt?",
-    answer: "Lorem ipsum dolor sit amet consectetur, adipisicing elit.",
-    value: "item-4",
-  },
-  {
-    question:
-      "Enim ad minim veniam, quis nostrud exercitation ullamco laboris?",
-    answer: "consectetur adipisicing elit. Sint labore.",
-    value: "item-5",
-  },
-];
-
 export const FAQSection = () => {
   return (
     <section className="container py-24 sm:py-32">

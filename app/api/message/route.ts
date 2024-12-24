@@ -63,12 +63,12 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    Message.create({
-      content: content[content.length - 1].content,
-      userAddress: userPublicKey,
-      fee: game.currentFee,
-      transactionHash: txnHash
-    });
+    // Message.create({
+    //   content: content[content.length - 1].content,
+    //   userAddress: userPublicKey,
+    //   fee: game.currentFee,
+    //   transactionHash: txnHash
+    // });
 
     if (!process.env.GARY_API_URL) {
       throw new Error('GARY_API_URL not defined');

@@ -1,3 +1,5 @@
+"use client";
+
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal, WalletIcon } from "@solana/wallet-adapter-react-ui";
 import { MouseEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";

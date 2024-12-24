@@ -7,7 +7,7 @@ export async function GET() {
   try {
     await connectDB();
     const solPrice = await getSolPrice();
-    const defaultFeeUSD = 300;
+    const defaultFeeUSD = 1;
     const defaultFeeSOL = defaultFeeUSD / solPrice;
     
     let game = await Game.findOne({ isActive: true });
@@ -16,16 +16,18 @@ export async function GET() {
       game = await Game.create({
         isActive: true,
         messageCount: 0,
-        currentFeeUSD: defaultFeeUSD,
-        currentFeeSOL: defaultFeeSOL,
-        prizePoolUSD: defaultFeeUSD,
-        prizePoolSOL: defaultFeeSOL
+        currentFee: defaultFeeUSD,
+        // currentFeeSOL: defaultFeeSOL,
+        prizePool: 300,
+        // prizePoolSOL: defaultFeeSOL
       });
     }
 
+    const currentSolFee = game.currentFee / solPrice;
+
     return NextResponse.json({
       feeUSD: game.currentFee || defaultFeeUSD,
-      // feeSOL: game.currentFeeSOL || defaultFeeSOL
+      feeSOL: currentSolFee || defaultFeeSOL
     });
   } catch (error) {
     console.error("Failed to fetch current fee:", error);
