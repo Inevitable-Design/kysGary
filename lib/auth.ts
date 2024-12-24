@@ -1,18 +1,13 @@
 // lib/auth.ts
 import { PublicKey } from '@solana/web3.js';
 import * as nacl from 'tweetnacl';
-import * as jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+
 import bs58 from 'bs58';
 import crypto from 'crypto';
 import { NextRequest } from 'next/server';
 
 // Add type declarations
-declare module 'jsonwebtoken' {
-  export interface JwtPayload {
-    publicKey: string;
-  }
-}
-
 export const generateNonce = async (): Promise<string> => {
   return crypto.randomBytes(32).toString('base64');
 };
