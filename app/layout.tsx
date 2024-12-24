@@ -60,7 +60,7 @@ function WalletAuthWrapper({ children }: { children: React.ReactNode }) {
     if (!connected && pathname === '/chat') {
       router.push('/');
     }
-  }, [connected, pathname, router]);
+  }, [connected, pathname]);
 
   return <>{children}</>;
 }

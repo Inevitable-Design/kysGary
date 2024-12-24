@@ -39,7 +39,7 @@ export default function ChatInterface() {
       // Add initial bot message with fee info
       setMessages([{
         id: '1',
-        content: `Welcome! Current fee is ${data.feeUSD} USD (${data.feeSOL.toFixed(4)} SOL)`,
+        content: `Welcome! Current fee is ${data.feeUSD} USD `,
         sender: 'bot',
         timestamp: new Date()
       }])

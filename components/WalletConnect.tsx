@@ -21,7 +21,7 @@ const WalletButton = ({ ...props }) => {
         }
         if (!base58) {
             if (connecting) return "Connecting...";
-            if (connected) return "Connected";
+            if (connected || connecting) return "Connected";
             return "Connect Wallet";
         }
         return base58.slice(0, 4) + "…" + base58.slice(-8);

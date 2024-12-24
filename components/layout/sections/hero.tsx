@@ -34,7 +34,7 @@ export const HeroSection = () => {
     const fetchGameData = async () => {
       try {
         // Simulate slower network
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        // await new Promise(resolve => setTimeout(resolve, 3000));
 
         // Fetch prize pool
         const prizePoolRes = await fetch('/api/game/prizePool');
@@ -120,7 +120,7 @@ export const HeroSection = () => {
               </div>
 
               <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-                <WalletButton />
+                {/* <WalletButton /> */}
                 {connected ? (
                   <Button 
                     asChild 
@@ -190,7 +190,7 @@ export const HeroSection = () => {
             </div>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-              <WalletButton />
+              {/* <WalletButton /> */}
               {connected ? (
                 <Button 
                   asChild 

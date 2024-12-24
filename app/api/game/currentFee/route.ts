@@ -24,8 +24,8 @@ export async function GET() {
     }
 
     return NextResponse.json({
-      feeUSD: game.currentFeeUSD || defaultFeeUSD,
-      feeSOL: game.currentFeeSOL || defaultFeeSOL
+      feeUSD: game.currentFee || defaultFeeUSD,
+      // feeSOL: game.currentFeeSOL || defaultFeeSOL
     });
   } catch (error) {
     console.error("Failed to fetch current fee:", error);
