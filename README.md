@@ -1,4 +1,4 @@
-# 🎮 Kill Yourself gary - Hackathon Submission
+# 🎮 kysGary (Kill Yourself Gary) 
 
 ## Project Overview
 A decentralized social game built on Solana where players engage in strategic message-based gameplay within 24-hour time windows. The game combines blockchain technology, social interaction, and game theory to create an engaging competitive experience.
